@@ -18,8 +18,14 @@ if (releasedTags.includes(latestTag)) {
 }
 
 await $`docker pull ${`docker:${latestTag}`}`;
+
+$.log(`Exporting rootfs`);
 const containerId = await $`docker create ${`docker:${latestTag}`}`.text();
 await $`docker export ${containerId} | gzip > rootfs.tar.gz`;
+await $`tar -tf rootfs.tar.gz`;
+
+const digest = await $`sha256sum -b rootfs.tar.gz`.text();
+console.log(digest);
 
 /*
 - run: docker export $(docker create docker:latest) | gzip > rootfs.tar.gz
