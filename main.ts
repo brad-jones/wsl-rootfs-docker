@@ -17,7 +17,10 @@ if (releasedTags.includes(latestTag)) {
   Deno.exit(0);
 }
 
-await $`docker export (docker create ${`docker:${latestTag}`}) | gzip > rootfs.tar.gz`;
+await $`docker pull ${`docker:${latestTag}`}`;
+const containerId = await $`docker create ${`docker:${latestTag}`}`.text();
+await $`docker export ${containerId} | gzip > rootfs.tar.gz`;
+
 /*
 - run: docker export $(docker create docker:latest) | gzip > rootfs.tar.gz
       - run: tar -tf rootfs.tar.gz
