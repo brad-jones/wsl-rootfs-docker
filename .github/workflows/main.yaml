@@ -32,5 +32,6 @@ jobs:
 
       - name: 🔑 Upload Attestations
         uses: actions/attest-build-provenance@v1
+        if: ${{ hashFiles('./dist/wsl-rootfs-docker_*.tar.gz') != '' }}
         with:
           subject-path: ./dist/wsl-rootfs-docker_*.tar.gz
