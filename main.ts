@@ -4,7 +4,7 @@ import { z } from "zod";
 const latestTag = z.object({ Tags: z.array(z.string()) })
   .parse(await $`skopeo list-tags docker://docker.io/docker`.json())
   .Tags.filter((_) => _.match(/^\d+\.\d+\.\d+-dind-alpine.*$/))
-  .reverse()[3];
+  .reverse()[0];
 
 $.log(`Latest version from registry: ${latestTag}`);
 
