@@ -9,9 +9,12 @@ const latestTag = z.object({ Tags: z.array(z.string()) })
 $.log(`Latest version from registry: ${latestTag}`);
 
 const releasedTags = z.array(z.object({ tagName: z.string() }))
-  .parse(await $`gh release list -R ${Deno.env.get("GITHUB_REPOSITORY")!} --json tagName`.json())
+  .parse(await $`gh release list --json tagName`.json())
   .map((_) => _.tagName);
 
+console.log(releasedTags);
+
+/*
 if (releasedTags.includes(latestTag)) {
   $.log(`Nothing to do, tag already published`);
   Deno.exit(0);
@@ -26,3 +29,4 @@ await Deno.writeTextFile(`./dist/${rootfsFileName}.sha256`, digest);
 $.log(`Digest sha256:${digest}`);
 
 await $`gh release create -R ${Deno.env.get("GITHUB_REPOSITORY")!} ${latestTag} --generate-notes ./dist/${rootfsFileName} ./dist/${rootfsFileName}.sha256`;
+*/
