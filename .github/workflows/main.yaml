@@ -13,3 +13,5 @@ jobs:
           version: v1.17.0
       - run: deno install
       - run: deno run --cached-only -A ./main.ts
+        env:
+          GH_TOKEN: ${{ github.token }}
