@@ -12,14 +12,12 @@ const releasedTags = z.array(z.object({ tagName: z.string() }))
   .parse(await $`gh release list -R ${Deno.env.get("GITHUB_REPOSITORY")!} --json tagName`.json())
   .map((_) => _.tagName);
 
-console.log(releasedTags);
-
 if (releasedTags.includes(latestTag)) {
   $.log(`Nothing to do, tag already published`);
   Deno.exit(0);
 }
 
-await $`docker export (docker create docker:${latestTag}) | gzip > rootfs.tar.gz`;
+await $`docker export (docker create ${`docker:${latestTag}`}) | gzip > rootfs.tar.gz`;
 /*
 - run: docker export $(docker create docker:latest) | gzip > rootfs.tar.gz
       - run: tar -tf rootfs.tar.gz
