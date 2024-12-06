@@ -11,4 +11,5 @@ jobs:
       - uses: warjiang/setup-skopeo@v0.1.3
         with:
           version: v1.17.0
-      - run: deno run -A ./main.ts
+      - run: deno install
+      - run: deno run --cached-only -A ./main.ts
