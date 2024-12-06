@@ -17,18 +17,12 @@ if (releasedTags.includes(latestTag)) {
   Deno.exit(0);
 }
 
-await $`docker pull ${`docker:${latestTag}`}`;
-
-$.log(`Exporting rootfs`);
 await Deno.mkdir("dist");
 const rootfsFileName = `wsl-rootfs-docker_${latestTag}.tar.gz`;
-const containerId = await $`docker create ${`docker:${latestTag}`}`.text();
-await $`docker export ${containerId} | gzip > ./dist/${rootfsFileName}`;
+await $`docker buildx b --build-arg ${`TAG=${latestTag}`} --output type=tar ./src | gzip >./dist/${rootfsFileName}`;
 
 const digest = (await $`sha256sum -b ./dist/${rootfsFileName}`.text()).split(" ")[0];
 await Deno.writeTextFile(`./dist/${rootfsFileName}.sha256`, digest);
 $.log(`Digest sha256:${digest}`);
 
-await $`gh release create -R ${Deno.env.get(
-  "GITHUB_REPOSITORY",
-)!} ${latestTag} --generate-notes ./dist/${rootfsFileName} ./dist/${rootfsFileName}.sha256`;
+await $`gh release create -R ${Deno.env.get("GITHUB_REPOSITORY")!} ${latestTag} --generate-notes ./dist/${rootfsFileName} ./dist/${rootfsFileName}.sha256`;
