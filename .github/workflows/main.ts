@@ -12,21 +12,15 @@ const releasedTags = z.array(z.object({ tagName: z.string() }))
   .parse(await $`gh release list --json tagName`.json())
   .map((_) => _.tagName);
 
-console.log(releasedTags);
-
-/*
 if (releasedTags.includes(latestTag)) {
   $.log(`Nothing to do, tag already published`);
   Deno.exit(0);
 }
 
+$.log(`Building...`);
 await Deno.mkdir("dist");
 const rootfsFileName = `wsl-rootfs-docker_${latestTag}.tar.gz`;
 await $`docker buildx b --build-arg ${`TAG=${latestTag}`} --output type=tar ./src | gzip >./dist/${rootfsFileName}`;
 
-const digest = (await $`sha256sum -b ./dist/${rootfsFileName}`.text()).split(" ")[0];
-await Deno.writeTextFile(`./dist/${rootfsFileName}.sha256`, digest);
-$.log(`Digest sha256:${digest}`);
-
-await $`gh release create -R ${Deno.env.get("GITHUB_REPOSITORY")!} ${latestTag} --generate-notes ./dist/${rootfsFileName} ./dist/${rootfsFileName}.sha256`;
-*/
+$.log(`Publishing...`);
+await $`gh release create ${latestTag} --generate-notes ./dist/${rootfsFileName}`;
