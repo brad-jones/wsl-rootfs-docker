@@ -29,4 +29,6 @@ const digest = (await $`sha256sum -b ./dist/${rootfsFileName}`.text()).split(" "
 await Deno.writeTextFile(`./dist/${rootfsFileName}.sha256`, digest);
 $.log(`Digest sha256:${digest}`);
 
-await $`gh release create -R ${Deno.env.get("GITHUB_REPOSITORY")!} ${latestTag} --generate-notes ./dist/*`;
+await $`gh release create -R ${Deno.env.get(
+  "GITHUB_REPOSITORY",
+)!} ${latestTag} --generate-notes ./dist/${rootfsFileName} ./dist/${rootfsFileName}.sha256`;
