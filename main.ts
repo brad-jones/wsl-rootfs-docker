@@ -1,4 +1,3 @@
-#!/usr/bin/env -S deno run -A
 import $ from "@david/dax";
 import { z } from "zod";
 
