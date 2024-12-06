@@ -6,4 +6,4 @@ jobs:
     steps:
       - run: docker export $(docker create docker:latest) | gzip > rootfs1.tar.gz
       - run: docker export $(docker create docker:latest) | gzip > rootfs2.tar.gz
-      - run: sha256sum *
+      - run: sha256sum -b *
